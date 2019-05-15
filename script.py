@@ -5,7 +5,6 @@ import urllib
 from pymongo import MongoClient
 import threading
 
-# TOKEN = "885717548:AAGls9vnpczG_Fq1TkcvY-WeMsorEm3Y3js"
 TOKEN = "891003963:AAEUyu-J8TQd9_teAB0pQduNnf7Qb5gl-3A"
 URL = "https://api.telegram.org/bot{0}/".format(TOKEN)
 myclient = MongoClient(
@@ -31,7 +30,6 @@ def get_updates(offset=None):
     if offset:
         url += "&offset={}".format(offset)
     js = get_json_from_url(url)
-    print(js)
     return js
 
 
@@ -39,13 +37,11 @@ def deleteMessage(chatId, messageId, repliedMessageId):
     time.sleep(10)
     url = URL + \
         "deleteMessage?chat_id={}&message_id={}".format(chatId, messageId)
-    print(url)
     get_url(url)
     if(repliedMessageId is not None):
         url = URL + \
             "deleteMessage?chat_id={}&message_id={}".format(
                 chatId, repliedMessageId)
-        print(url)
         get_url(url)
 
 
@@ -99,7 +95,6 @@ def send_toxicityReport(text, user_id, chat_id, analysisMessage, username, group
     global model
     classes = ["toxic", "severe_toxic", "obscene",
                "threat", "insult", "identity_hate"]
-    comment = text
     url = 'https://toxicity-warrior-api.herokuapp.com/analyze'
     params = {'comment': text}
     response = requests.post(url, params)
@@ -107,9 +102,7 @@ def send_toxicityReport(text, user_id, chat_id, analysisMessage, username, group
     for i in response.json():
         pred.append(response.json()[i])
     pred = pred[1:]
-    print(pred)
     predictedClasses = []
-    a = max(pred)
     count = 0
     for i, c in enumerate(classes):
         if(pred[i] > 0.7):
@@ -174,6 +167,3 @@ def main():
 
 if __name__ == '__main__':
     main()
-
-
-# https://api.telegram.org/bot885717548:AAGls9vnpczG_Fq1TkcvY-WeMsorEm3Y3js/kickChatMember?chat_id=-1001158990494&user_id=585681889
